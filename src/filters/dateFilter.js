@@ -1,36 +1,18 @@
-/*
-Stolen from https://stackoverflow.com/a/31615643
-via https://github.com/andy-piccalilli/hylia
-*/
-const appendSuffix = (n) => {
-    var s = ['th', 'st', 'nd', 'rd'],
-        v = n % 100
-    return n + (s[(v - 20) % 10] || s[v] || s[0])
-}
+const { DateTime } = require("luxon");
 
 module.exports = function dateFilter(value) {
-    const dateObject = new Date(value)
+  if (!value) {
+    return "";
+  }
 
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ]
-    // fixes off by one day error
-    let datePlusOne = dateObject.getDate() + 1
+  const asDate =
+    value instanceof Date
+      ? DateTime.fromJSDate(value, { zone: "utc" })
+      : DateTime.fromISO(String(value), { zone: "utc" });
 
-    const dayWithSuffix = appendSuffix(dateObject.getDate())
+  if (!asDate.isValid) {
+    return "";
+  }
 
-    return `${
-        months[dateObject.getMonth()]
-    } ${datePlusOne}, ${dateObject.getFullYear()}`
-}
+  return asDate.toFormat("LLLL d, yyyy");
+};

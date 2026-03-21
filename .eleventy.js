@@ -1,6 +1,4 @@
-// const { DateTime } = require("luxon");
-const pluginRss = require("@11ty/eleventy-plugin-rss");
-const svgSprite = require("eleventy-plugin-svg-sprite");
+const { DateTime } = require("luxon");
 const dateFilter = require("./src/filters/dateFilter.js");
 const cleanCSS = require("clean-css");
 
@@ -22,26 +20,16 @@ module.exports = function (config) {
   // FILTERS //
   // date filter
   config.addFilter("dateFilter", dateFilter);
+  config.addFilter("dateToRfc3339", function (value) {
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+    return DateTime.fromJSDate(date, { zone: "utc" }).toISO({ suppressMilliseconds: true });
+  });
   // clean and inline CSS
   config.addFilter("cssmin", function (code) {
     return new cleanCSS({}).minify(code).styles;
-  });
-
-  // TRANSFORMS //
-  // minify HTML
-  const htmlMinTransform = require("./src/transforms/html-min.js");
-  const isProduction = process.env.ELEVENTY_ENV === "production";
-  // html min only in production
-  if (isProduction) {
-    config.addTransform("htmlmin", htmlMinTransform);
-  }
-
-  // PLUG-INS //
-  config.addPlugin(pluginRss);
-  config.addPlugin(svgSprite, {
-    path: "./src/assets/icons",
-    svgShortcode: "icon",
-    globalClasses: "icon",
   });
 
   // EXTRAS //

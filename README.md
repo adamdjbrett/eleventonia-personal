@@ -2,6 +2,8 @@
 
 A mildly opinionated [Eleventy](https://11ty.dev) starter project.
 
+This personal copy is updated to Eleventy `3.1.2` and uses Luxon for date formatting.
+
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/mattdecamp/eleventonia)  
 
 ## Features
